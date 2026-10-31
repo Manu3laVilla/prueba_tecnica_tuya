@@ -28,9 +28,11 @@ El frontend consume principalmente el endpoint agregado **`GET /bff/dashboard`**
 - Pagos (`POST /api/payments`)
 - Historial (`GET /api/transactions`)
 
-### Usuarios de prueba
+### Usuarios de prueba (acceso a la app)
 
-Definidos en [`data/seed.json`](data/seed.json):
+Credenciales para iniciar sesión en el frontend. También puedes compartirlas en el correo de entrega de la prueba.
+
+Definidas en [`data/seed.json`](data/seed.json):
 
 | Usuario | Contraseña |
 |---------|------------|
@@ -42,8 +44,24 @@ Definidos en [`data/seed.json`](data/seed.json):
 **1. Backend**
 
 ```powershell
+cd c:\prueba_tecnica_tuya
+.\scripts\run-api.ps1
+```
+
+O, si `dotnet` ya está en el PATH:
+
+```powershell
 cd backend\src\CreditCards.Api
 dotnet run
+```
+
+> **Windows:** si ves *«dotnet no se reconoce»*, cierra y abre la terminal (o ejecuta `.\scripts\run-api.ps1`, que usa la ruta completa del SDK).
+
+Si al iniciar ves errores de *archivo bloqueado*, hay otra API ya corriendo:
+
+```powershell
+.\scripts\stop-api.ps1
+.\scripts\run-api.ps1
 ```
 
 API: `http://localhost:5239`  

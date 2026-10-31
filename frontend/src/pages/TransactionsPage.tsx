@@ -1,18 +1,9 @@
 import { useEffect, useState } from 'react'
+import { Receipt } from 'lucide-react'
 import { api } from '../api/client'
 import type { Transaction } from '../api/types'
 import { useAuth } from '../auth/AuthContext'
-
-function formatMoney(value: number) {
-  return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'USD' }).format(value)
-}
-
-function formatDate(value: string) {
-  return new Intl.DateTimeFormat('es-CO', {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-  }).format(new Date(value))
-}
+import { formatDate, formatMoney } from '../utils/format'
 
 export function TransactionsPage() {
   const { token } = useAuth()
@@ -27,43 +18,33 @@ export function TransactionsPage() {
       .catch((err) => setError(err instanceof Error ? err.message : 'Error al cargar historial'))
   }, [token])
 
-  if (error) {
-    return <p className="error">{error}</p>
-  }
+  if (error) return <p className="form-error">{error}</p>
 
   return (
-    <section className="panel">
-      <div className="panel-header">
-        <h2>Historial de transacciones</h2>
-      </div>
+    <section className="card-surface">
+      <h3>Todos los movimientos</h3>
 
       {transactions.length === 0 ? (
-        <p className="muted">No hay transacciones todavía.</p>
-      ) : (
-        <div className="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Fecha</th>
-                <th>Descripción</th>
-                <th>Tarjeta</th>
-                <th>Monto</th>
-              </tr>
-            </thead>
-            <tbody>
-              {transactions.map((item) => (
-                <tr key={item.id}>
-                  <td>{formatDate(item.createdAtUtc)}</td>
-                  <td>{item.description}</td>
-                  <td>
-                    {item.cardNickname} •••• {item.cardLastFourDigits}
-                  </td>
-                  <td>{formatMoney(item.amount)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="empty">
+          <Receipt size={40} strokeWidth={1.5} />
+          <p>No hay transacciones todavía.</p>
+          <span className="text-muted">Los pagos que realices aparecerán aquí.</span>
         </div>
+      ) : (
+        <ul className="tx-list tx-list--full">
+          {transactions.map((item) => (
+            <li key={item.id}>
+              <div className="tx-list__icon">$</div>
+              <div className="tx-list__body">
+                <strong>{item.description}</strong>
+                <p className="text-muted">
+                  {formatDate(item.createdAtUtc)} · {item.cardNickname} · •••• {item.cardLastFourDigits}
+                </p>
+              </div>
+              <span className="tx-list__amount">{formatMoney(item.amount)}</span>
+            </li>
+          ))}
+        </ul>
       )}
     </section>
   )

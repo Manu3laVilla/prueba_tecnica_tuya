@@ -1,6 +1,8 @@
 import { type FormEvent, useEffect, useState } from 'react'
+import { CheckCircle2 } from 'lucide-react'
 import { api, ApiError } from '../api/client'
 import type { CreateCreditCardRequest, CreditCard, UpdateCreditCardRequest } from '../api/types'
+import { CreditCardVisual } from '../components/CreditCardVisual'
 import { useAuth } from '../auth/AuthContext'
 
 const emptyCreate: CreateCreditCardRequest = {
@@ -11,10 +13,6 @@ const emptyCreate: CreateCreditCardRequest = {
   expiryMonth: 12,
   expiryYear: new Date().getFullYear() + 3,
   creditLimit: 1000,
-}
-
-function formatMoney(value: number) {
-  return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'USD' }).format(value)
 }
 
 export function CardsPage() {
@@ -97,120 +95,77 @@ export function CardsPage() {
   }
 
   return (
-    <div className="stack-lg">
-      <section className="panel">
-        <div className="panel-header">
-          <h2>{editingId ? 'Editar tarjeta' : 'Agregar tarjeta'}</h2>
-        </div>
+    <div className="page-stack">
+      <section className="card-surface form-card">
+        <h3>{editingId ? 'Editar tarjeta' : 'Nueva tarjeta'}</h3>
         <form className="form-grid" onSubmit={handleSubmit}>
-          <label>
-            Alias
-            <input
-              value={form.nickname}
-              onChange={(e) => setForm({ ...form, nickname: e.target.value })}
-              required
-            />
+          <label className="field">
+            <span>Alias</span>
+            <input value={form.nickname} onChange={(e) => setForm({ ...form, nickname: e.target.value })} required />
           </label>
-          <label>
-            Titular
-            <input
-              value={form.holderName}
-              onChange={(e) => setForm({ ...form, holderName: e.target.value })}
-              required
-            />
+          <label className="field">
+            <span>Titular</span>
+            <input value={form.holderName} onChange={(e) => setForm({ ...form, holderName: e.target.value })} required />
           </label>
           {!editingId ? (
-            <label>
-              Número de tarjeta
-              <input
-                value={form.cardNumber}
-                onChange={(e) => setForm({ ...form, cardNumber: e.target.value })}
-                required
-              />
+            <label className="field field--wide">
+              <span>Número</span>
+              <input value={form.cardNumber} onChange={(e) => setForm({ ...form, cardNumber: e.target.value })} required />
             </label>
           ) : null}
-          <label>
-            Marca
+          <label className="field">
+            <span>Marca</span>
             <select value={form.brand} onChange={(e) => setForm({ ...form, brand: e.target.value })}>
               <option>Visa</option>
               <option>Mastercard</option>
               <option>Amex</option>
             </select>
           </label>
-          <label>
-            Mes venc.
-            <input
-              type="number"
-              min={1}
-              max={12}
-              value={form.expiryMonth}
-              onChange={(e) => setForm({ ...form, expiryMonth: Number(e.target.value) })}
-              required
-            />
+          <label className="field">
+            <span>Mes</span>
+            <input type="number" min={1} max={12} value={form.expiryMonth} onChange={(e) => setForm({ ...form, expiryMonth: Number(e.target.value) })} required />
           </label>
-          <label>
-            Año venc.
-            <input
-              type="number"
-              min={new Date().getFullYear()}
-              value={form.expiryYear}
-              onChange={(e) => setForm({ ...form, expiryYear: Number(e.target.value) })}
-              required
-            />
+          <label className="field">
+            <span>Año</span>
+            <input type="number" min={new Date().getFullYear()} value={form.expiryYear} onChange={(e) => setForm({ ...form, expiryYear: Number(e.target.value) })} required />
           </label>
-          <label>
-            Límite
-            <input
-              type="number"
-              min={1}
-              step="0.01"
-              value={form.creditLimit}
-              onChange={(e) => setForm({ ...form, creditLimit: Number(e.target.value) })}
-              required
-            />
+          <label className="field">
+            <span>Límite USD</span>
+            <input type="number" min={1} step="0.01" value={form.creditLimit} onChange={(e) => setForm({ ...form, creditLimit: Number(e.target.value) })} required />
           </label>
-          <div className="form-actions">
-            <button type="submit">{editingId ? 'Guardar cambios' : 'Agregar'}</button>
+          <div className="form-grid__actions">
+            <button type="submit" className="btn btn--primary">
+              {editingId ? 'Guardar' : 'Agregar tarjeta'}
+            </button>
             {editingId ? (
-              <button type="button" className="ghost-button" onClick={resetForm}>
+              <button type="button" className="btn btn--ghost" onClick={resetForm}>
                 Cancelar
               </button>
             ) : null}
           </div>
         </form>
-        {message ? <p className="success">{message}</p> : null}
-        {error ? <p className="error">{error}</p> : null}
+        {message ? <p className="form-success"><CheckCircle2 size={16} /> {message}</p> : null}
+        {error ? <p className="form-error">{error}</p> : null}
       </section>
 
-      <section className="panel">
-        <div className="panel-header">
-          <h2>Mis tarjetas</h2>
-        </div>
+      <section className="page-stack">
+        <h3 className="section-title">Mis tarjetas ({cards.length})</h3>
         {cards.length === 0 ? (
-          <p className="muted">No tienes tarjetas registradas.</p>
+          <p className="text-muted card-surface">No tienes tarjetas. Crea la primera arriba.</p>
         ) : (
-          <div className="cards-grid">
+          <div className="cc-grid cc-grid--with-actions">
             {cards.map((card) => (
-              <article key={card.id} className="credit-card">
-                <div className="credit-card-top">
-                  <span>{card.brand}</span>
-                  <strong>{card.nickname}</strong>
-                </div>
-                <p className="card-number">•••• •••• •••• {card.lastFourDigits}</p>
-                <p className="muted">{card.holderName}</p>
-                <div className="credit-card-meta">
-                  <span>Disponible: {formatMoney(card.availableBalance)}</span>
-                  <span>Límite: {formatMoney(card.creditLimit)}</span>
-                </div>
-                <div className="card-actions">
-                  <button type="button" className="ghost-button" onClick={() => startEdit(card)}>
+              <div key={card.id} className="cc-item">
+                <CreditCardVisual card={card} />
+                <div className="cc-item__actions">
+                  <button type="button" className="btn btn--ghost btn--sm" onClick={() => startEdit(card)}>
                     Editar
                   </button>
-                  <button type="button" className="danger-button" onClick={() => removeCard(card.id)}>
+                  <button type="button" className="btn btn--danger btn--sm" onClick={() => removeCard(card.id)}>
                     Eliminar
                   </button>
                 </div>
-              </article>
+              </div>
             ))}
           </div>
         )}

@@ -8,6 +8,7 @@ export default defineConfig({
     proxy: {
       '/api': 'http://localhost:5239',
       '/bff': 'http://localhost:5239',
+      '/health': 'http://localhost:5239',
     },
   },
 })

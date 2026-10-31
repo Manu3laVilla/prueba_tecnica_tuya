@@ -1,11 +1,10 @@
 import { type FormEvent, useEffect, useState } from 'react'
+import { CheckCircle2 } from 'lucide-react'
 import { api, ApiError } from '../api/client'
 import type { CreditCard, Transaction } from '../api/types'
+import { CreditCardVisual } from '../components/CreditCardVisual'
 import { useAuth } from '../auth/AuthContext'
-
-function formatMoney(value: number) {
-  return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'USD' }).format(value)
-}
+import { formatMoney } from '../utils/format'
 
 export function PaymentsPage() {
   const { token } = useAuth()
@@ -46,33 +45,39 @@ export function PaymentsPage() {
   const selected = cards.find((card) => card.id === creditCardId)
 
   return (
-    <div className="stack-lg">
-      <section className="panel">
-        <div className="panel-header">
-          <h2>Realizar pago</h2>
-        </div>
-
+    <div className="page-stack payment-layout">
+      <section className="card-surface">
+        <h3>Selecciona tarjeta</h3>
         {cards.length === 0 ? (
-          <p className="muted">Agrega una tarjeta antes de realizar pagos.</p>
+          <p className="text-muted">Agrega una tarjeta antes de pagar.</p>
         ) : (
-          <form className="stack" onSubmit={handleSubmit}>
-            <label>
-              Tarjeta
-              <select value={creditCardId} onChange={(e) => setCreditCardId(e.target.value)} required>
-                {cards.map((card) => (
-                  <option key={card.id} value={card.id}>
-                    {card.nickname} •••• {card.lastFourDigits} ({formatMoney(card.availableBalance)} disp.)
-                  </option>
-                ))}
-              </select>
-            </label>
-            {selected ? (
-              <p className="muted">
-                Saldo disponible: {formatMoney(selected.availableBalance)} de {formatMoney(selected.creditLimit)}
-              </p>
-            ) : null}
-            <label>
-              Monto
+          <div className="cc-grid cc-grid--select">
+            {cards.map((card) => (
+              <CreditCardVisual
+                key={card.id}
+                card={card}
+                compact
+                selected={card.id === creditCardId}
+                onClick={() => setCreditCardId(card.id)}
+              />
+            ))}
+          </div>
+        )}
+      </section>
+
+      <section className="card-surface form-card">
+        <h3>Detalle del pago</h3>
+        {selected ? (
+          <p className="text-muted payment-hint">
+            Disponible: <strong>{formatMoney(selected.availableBalance)}</strong> de{' '}
+            {formatMoney(selected.creditLimit)}
+          </p>
+        ) : null}
+
+        {cards.length === 0 ? null : (
+          <form className="form-stack" onSubmit={handleSubmit}>
+            <label className="field">
+              <span>Monto (USD)</span>
               <input
                 type="number"
                 min={0.01}
@@ -82,30 +87,34 @@ export function PaymentsPage() {
                 required
               />
             </label>
-            <label>
-              Descripción
+            <label className="field">
+              <span>Descripción</span>
               <input
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="Ej. Compra en supermercado"
+                placeholder="Ej. Suscripción streaming"
                 required
               />
             </label>
-            {error ? <p className="error">{error}</p> : null}
-            <button type="submit">Procesar pago</button>
+            {error ? <p className="form-error">{error}</p> : null}
+            <button type="submit" className="btn btn--primary btn--block">
+              Confirmar pago
+            </button>
           </form>
         )}
-      </section>
 
-      {lastPayment ? (
-        <section className="panel success-panel">
-          <h3>Pago registrado</h3>
-          <p>
-            {lastPayment.description} por {formatMoney(lastPayment.amount)} en {lastPayment.cardNickname} ••••{' '}
-            {lastPayment.cardLastFourDigits}
-          </p>
-        </section>
-      ) : null}
+        {lastPayment ? (
+          <div className="toast-success">
+            <CheckCircle2 size={20} />
+            <div>
+              <strong>Pago registrado</strong>
+              <p className="text-muted">
+                {lastPayment.description} · {formatMoney(lastPayment.amount)} · {lastPayment.cardNickname}
+              </p>
+            </div>
+          </div>
+        ) : null}
+      </section>
     </div>
   )
 }
