@@ -1,0 +1,48 @@
+{
+  "users": [
+    {
+      "username": "demo",
+      "password": "Demo123!",
+      "displayName": "Usuario Demo",
+      "creditCards": [
+        {
+          "nickname": "Viajes",
+          "holderName": "Usuario Demo",
+          "cardNumber": "4111111111111111",
+          "brand": "Visa",
+          "expiryMonth": 12,
+          "expiryYear": 2028,
+          "creditLimit": 5000,
+          "availableBalance": 4200
+        },
+        {
+          "nickname": "Compras",
+          "holderName": "Usuario Demo",
+          "cardNumber": "5555555555554444",
+          "brand": "Mastercard",
+          "expiryMonth": 8,
+          "expiryYear": 2027,
+          "creditLimit": 3000,
+          "availableBalance": 3000
+        }
+      ]
+    },
+    {
+      "username": "ana",
+      "password": "Ana123!",
+      "displayName": "Ana García",
+      "creditCards": [
+        {
+          "nickname": "Principal",
+          "holderName": "Ana García",
+          "cardNumber": "378282246310005",
+          "brand": "Amex",
+          "expiryMonth": 5,
+          "expiryYear": 2029,
+          "creditLimit": 8000,
+          "availableBalance": 6500
+        }
+      ]
+    }
+  ]
+}

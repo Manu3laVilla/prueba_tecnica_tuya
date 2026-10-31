@@ -1,0 +1,21 @@
+# Build / IDE
+backend/**/bin/
+backend/**/obj/
+frontend/dist/
+frontend/node_modules/
+
+# Database
+*.db
+*.db-shm
+*.db-wal
+
+# Env
+.env
+.env.*
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Logs
+*.log
