@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: creditcards-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: EnableSwagger
+        value: "true"
+      - key: Cors__AllowedOrigins
+        sync: false
+      - key: Jwt__Key
+        generateValue: true

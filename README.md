@@ -39,6 +39,11 @@ Definidas en [`data/seed.json`](data/seed.json):
 | `demo` | `Demo123!` |
 | `ana` | `Ana123!` |
 
+### Demo online (sin instalar localmente)
+
+**Recomendado:** [Netlify](https://www.netlify.com) (frontend) + [Render](https://render.com) (API).  
+Guía paso a paso: [`docs/DEPLOY.md`](docs/DEPLOY.md).
+
 ### Ejecución local
 
 **1. Backend**

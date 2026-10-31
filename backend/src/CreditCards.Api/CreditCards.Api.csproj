@@ -21,4 +21,8 @@
     <ProjectReference Include="..\CreditCards.Infrastructure\CreditCards.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="..\..\..\data\seed.json" Link="data\seed.json" CopyToPublishDirectory="PreserveNewest" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>

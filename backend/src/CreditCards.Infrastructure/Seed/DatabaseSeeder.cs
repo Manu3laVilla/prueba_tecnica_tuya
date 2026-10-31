@@ -33,7 +33,11 @@ public sealed class DatabaseSeeder : IHostedService
             return;
         }
 
-        var seedPath = Path.GetFullPath(Path.Combine(_environment.ContentRootPath, "..", "..", "..", "data", "seed.json"));
+        var seedPath = Path.Combine(_environment.ContentRootPath, "data", "seed.json");
+        if (!File.Exists(seedPath))
+        {
+            seedPath = Path.GetFullPath(Path.Combine(_environment.ContentRootPath, "..", "..", "..", "data", "seed.json"));
+        }
         if (!File.Exists(seedPath))
         {
             seedPath = Path.GetFullPath(Path.Combine(_environment.ContentRootPath, "..", "..", "..", "..", "data", "seed.json"));

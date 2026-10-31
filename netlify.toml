@@ -1,0 +1,17 @@
+# Frontend React — configurar VITE_API_URL en Netlify (Site settings → Environment variables)
+# con la URL pública de la API (p. ej. Render), sin barra final.
+
+[build]
+  base = "frontend"
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+  VITE_BASE_PATH = "/"
+
+# SPA (React Router)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

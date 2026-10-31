@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react'
 import { AlertTriangle } from 'lucide-react'
 
+const API_BASE = import.meta.env.VITE_API_URL ?? ''
+
 export function ApiStatusBanner() {
   const [online, setOnline] = useState<boolean | null>(null)
 
   useEffect(() => {
-    fetch('/health')
+    const healthUrl = API_BASE ? `${API_BASE}/health` : '/health'
+    fetch(healthUrl)
       .then((r) => setOnline(r.ok))
       .catch(() => setOnline(false))
   }, [])
